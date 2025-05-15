@@ -2,6 +2,7 @@ package mjc.ramenlog.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +14,16 @@ public class Restaurant {
 
     private String name;
 
-    private String address;
+    @Embedded
+    private Address address;
 
     private int score;
 
     private String description;
+
+    private LocalDateTime openTime;
+
+    private LocalDateTime closeTime;
 
     private boolean isOpen;
 
