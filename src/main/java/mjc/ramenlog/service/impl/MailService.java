@@ -1,9 +1,11 @@
-package mjc.ramenlog.service;
+package mjc.ramenlog.service.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mjc.ramenlog.exception.BusinessException;
+import mjc.ramenlog.exception.ErrorCode;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -17,16 +19,14 @@ public class MailService {
 
     private final JavaMailSender emailSender;
 
-    public void sendEmail(String toEmail,
-                          String title,
-                          String authcode) {
-        MimeMessage emailForm = createEmailForm(toEmail, title, authcode);
+    public void sendEmail(String toEmail, String title, String authCode) {
+        MimeMessage emailForm = createEmailForm(toEmail, title, authCode);
         try {
             emailSender.send(emailForm);
         } catch (RuntimeException e) {
             log.debug("MailService.sendEmail exception occur toEmail: {}, " +
-                    "title: {}, text: {}", toEmail, title, authcode);
-            throw new RuntimeException("ddd");
+                    "title: {}, text: {}", toEmail, title, authCode);
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR, "이메일 전송 오류 발생");
         }
     }
 
@@ -50,7 +50,7 @@ public class MailService {
             body += "</body></html>";
             messageHelper.setText(body, true);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR, "이메일 전송 오류 발생");
         }
 
         return messageHelper.getMimeMessage();

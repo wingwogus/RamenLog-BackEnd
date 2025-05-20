@@ -1,4 +1,4 @@
-package goorm.geese.config;
+package mjc.ramenlog.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

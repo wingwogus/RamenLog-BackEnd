@@ -1,4 +1,11 @@
 package mjc.ramenlog.dto;
 
-public class SignUpRequest {
+import lombok.Data;
+
+@Data
+public class SignUpRequestDto {
+    private String email;
+    private String password;
+    private String nickname;
+    private String phoneNumber;
 }

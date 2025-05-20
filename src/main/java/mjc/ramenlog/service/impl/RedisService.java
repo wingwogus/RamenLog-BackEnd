@@ -1,4 +1,4 @@
-package mjc.ramenlog.service;
+package mjc.ramenlog.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -29,12 +30,10 @@ public class RedisService {
     }
 
     @Transactional(readOnly = true)
-    public String getValues(String key) {
+    public Optional<String> getValues(String key) {
         ValueOperations<String, Object> values = redisTemplate.opsForValue();
-        if (values.get(key) == null) {
-            return "false";
-        }
-        return (String) values.get(key);
+
+        return Optional.ofNullable((String) values.get(key));
     }
 
     public void deleteValues(String key) {

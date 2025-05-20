@@ -1,7 +1,8 @@
-package goorm.geese.domain.email;
+package mjc.ramenlog.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
+import mjc.ramenlog.validate.CustomEmailValidator;
 
 import java.lang.annotation.*;
 

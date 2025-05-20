@@ -1,4 +1,4 @@
-package mjc.ramenlog.service;
+package mjc.ramenlog.service.impl;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +7,6 @@ import mjc.ramenlog.domain.Role;
 import mjc.ramenlog.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

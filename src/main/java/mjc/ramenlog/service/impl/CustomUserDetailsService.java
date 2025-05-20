@@ -1,4 +1,4 @@
-package mjc.ramenlog.service;
+package mjc.ramenlog.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import mjc.ramenlog.domain.Member;
