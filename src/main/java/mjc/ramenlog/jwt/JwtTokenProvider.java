@@ -1,13 +1,13 @@
-package mjc.ramenlog.service.impl;
+package mjc.ramenlog.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import mjc.ramenlog.dto.jwt.JwtToken;
 import mjc.ramenlog.exception.InvalidCredentialsException;
+import mjc.ramenlog.service.impl.CustomUserDetailsService;
+import mjc.ramenlog.service.impl.RedisService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +15,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Key;
 import java.time.Duration;
@@ -29,11 +28,15 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
     private final Key key;
     private final RedisService redisService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, RedisService redisService) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
+                            RedisService redisService,
+                            CustomUserDetailsService customUserDetailsService) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.redisService = redisService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     // Member 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
@@ -133,9 +136,9 @@ public class JwtTokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        // UserDetails 객체를 만들어서 Authentication return
-        // UserDetails: interface, User: UserDetails를 구현한 class
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        // CustomUserDetails 객체를 만들어서 Authentication return
+        CustomUserDetails principal = (CustomUserDetails) customUserDetailsService
+                .loadUserByUsername(claims.getSubject());
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 

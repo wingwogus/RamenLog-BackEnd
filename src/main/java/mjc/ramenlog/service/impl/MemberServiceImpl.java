@@ -5,18 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import mjc.ramenlog.domain.Member;
 import mjc.ramenlog.domain.Role;
 import mjc.ramenlog.dto.*;
-import mjc.ramenlog.dto.jwt.JwtToken;
+import mjc.ramenlog.jwt.JwtToken;
 import mjc.ramenlog.exception.*;
+import mjc.ramenlog.jwt.JwtTokenProvider;
 import mjc.ramenlog.repository.MemberRepository;
 import mjc.ramenlog.service.inf.MemberService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -84,7 +83,6 @@ public class MemberServiceImpl implements MemberService {
                 .email(signUpRequestDto.getEmail())
                 .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
                 .nickname(signUpRequestDto.getNickname())
-                .phoneNumber(signUpRequestDto.getPhoneNumber())
                 .role(Role.USER)
                 .build();
 
@@ -100,6 +98,16 @@ public class MemberServiceImpl implements MemberService {
         // 이메일 인증 요청 시 인증 번호 Redis에 저장 ( key = "AuthCode " + Email / value = AuthCode )
         redisService.setValues(AUTH_CODE_PREFIX + toEmail,
                 authCode, Duration.ofMillis(authCodeExpirationMillis));
+    }
+
+    @Override
+    public void logout(String email) {
+        Optional<String> refreshToken = redisService.getValues("RT:" + email);
+        if (refreshToken.isEmpty()) {
+            throw new InvalidCredentialsException("로그인되어 있지 않은 상태입니다");
+        }
+
+        redisService.deleteValues("RT:" + email);
     }
 
     private void checkDuplicatedEmail(String email) {

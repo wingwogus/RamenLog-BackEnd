@@ -25,8 +25,6 @@ public class Member {
 
     private String nickname;
 
-    private String phoneNumber;
-
     private String profileImageUrl;
 
     @Enumerated(EnumType.STRING)
