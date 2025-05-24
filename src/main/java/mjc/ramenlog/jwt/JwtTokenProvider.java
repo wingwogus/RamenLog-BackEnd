@@ -4,7 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import mjc.ramenlog.exception.InvalidCredentialsException;
+import mjc.ramenlog.exception.InvalidTokenException;
 import mjc.ramenlog.service.impl.CustomUserDetailsService;
 import mjc.ramenlog.service.impl.RedisService;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,20 +57,18 @@ public class JwtTokenProvider {
     }
 
     public JwtToken reissueToken(String accessToken, String refreshToken) {
-        // Refresh Token 유효성 검증
-        if (!validateToken(refreshToken)) {
-            throw new InvalidCredentialsException("유효하지 않은 Refresh Token 입니다.");
-        }
+        // 토큰 유효성 검사
+        validateToken(refreshToken);
 
         // Access Token에서 사용자 정보 추출 (비록 만료되었더라도 subject는 꺼낼 수 있음)
         Authentication authentication = getAuthentication(accessToken);
 
         // Redis에 저장된 RefreshToken과 일치하는지 확인
         String storedRefreshToken = redisService.getValues("RT:" + authentication.getName())
-                .orElseThrow(() -> new InvalidCredentialsException("유효하지 않은 Refresh Token 입니다."));
+                .orElseThrow(() -> new InvalidTokenException("유효하지 않은 Refresh Token 입니다."));
 
         if (!storedRefreshToken.equals(refreshToken)) {
-            throw new InvalidCredentialsException("Refresh Token이 일치하지 않습니다.");
+            throw new InvalidTokenException("Refresh Token이 일치하지 않습니다.");
         }
 
         long now = (new Date()).getTime();
@@ -127,7 +125,7 @@ public class JwtTokenProvider {
         Claims claims = parseClaims(accessToken);
 
         if (claims.get("auth") == null) {
-            throw new InvalidCredentialsException("권한 정보가 없는 토큰입니다.");
+            throw new InvalidTokenException("권한 정보가 없는 토큰입니다.");
         }
 
         // 클레임에서 권한 정보 가져오기
@@ -143,23 +141,21 @@ public class JwtTokenProvider {
     }
 
     // 토큰 정보를 검증하는 메서드
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
-            return true;
         } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
+            throw new InvalidTokenException("인증되지 않은 토큰입니다.");
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
+            throw new InvalidTokenException("만료된 토큰입니다.");
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
+            throw new InvalidTokenException("지원하지 않는 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
+            throw new InvalidTokenException("토큰의 내용이 비어있습니다.");
         }
-        return false;
     }
 
 

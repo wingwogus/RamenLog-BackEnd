@@ -3,6 +3,7 @@ package mjc.ramenlog.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 
+import jakarta.validation.Valid;
 import mjc.ramenlog.dto.*;
 import mjc.ramenlog.jwt.JwtToken;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인합니다.")
-    public ResponseEntity<ApiResponse<JwtToken>> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<ApiResponse<JwtToken>> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         JwtToken response = memberService.login(loginRequestDto);
         return ResponseEntity.ok(ApiResponse.success("로그인 성공", response));
     }
