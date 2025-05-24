@@ -2,12 +2,18 @@ package mjc.ramenlog.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Data
 @AllArgsConstructor
 public class ApiResponse<T> {
+    @Schema(description = "요청 성공 여부", example = "true", required = true)
     private boolean success;
+
+    @Schema(description = "응답 메시지", example = "OK", required = true)
     private String message;
+
+    @Schema(description = "응답 데이터")
     private T data;
 
     // 정적 팩토리 메서드 (편리하게 만들기)

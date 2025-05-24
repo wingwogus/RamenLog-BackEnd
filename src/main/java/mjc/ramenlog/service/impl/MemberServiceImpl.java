@@ -5,18 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import mjc.ramenlog.domain.Member;
 import mjc.ramenlog.domain.Role;
 import mjc.ramenlog.dto.*;
-import mjc.ramenlog.dto.jwt.JwtToken;
+import mjc.ramenlog.jwt.JwtToken;
 import mjc.ramenlog.exception.*;
+import mjc.ramenlog.jwt.JwtTokenProvider;
 import mjc.ramenlog.repository.MemberRepository;
 import mjc.ramenlog.service.inf.MemberService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -62,10 +61,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public JwtToken reissue(ReissueRequestDto request) {
-        // 1. RefreshToken 유효성 검사
-        if (!jwtTokenProvider.validateToken(request.getRefreshToken())) {
-            throw new InvalidCredentialsException("유효하지 않은 Refresh Token입니다.");
-        }
+        jwtTokenProvider.validateToken(request.getRefreshToken());
 
         // 4. 새 토큰 생성
         return jwtTokenProvider.reissueToken(request.getAccessToken(), request.getRefreshToken());
@@ -74,17 +70,16 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void signUp(SignUpRequestDto signUpRequestDto) {
         String isSuccess = redisService.getValues(VERIFIED_EMAIL_PREFIX + signUpRequestDto.getEmail())
-                .orElseThrow(() -> new VerificationFailedException("인증되지 않은 이메일입니다."));
+                .orElseThrow(() -> new NotVerifiedEmailException("인증되지 않은 이메일입니다."));
 
         if (!isSuccess.equals("true")) {
-            throw new VerificationFailedException("인증되지 않은 이메일입니다.");
+            throw new NotVerifiedEmailException("인증되지 않은 이메일입니다.");
         }
 
         Member member = Member.builder()
                 .email(signUpRequestDto.getEmail())
                 .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
                 .nickname(signUpRequestDto.getNickname())
-                .phoneNumber(signUpRequestDto.getPhoneNumber())
                 .role(Role.USER)
                 .build();
 
@@ -102,11 +97,21 @@ public class MemberServiceImpl implements MemberService {
                 authCode, Duration.ofMillis(authCodeExpirationMillis));
     }
 
+    @Override
+    public void logout(String email) {
+        Optional<String> refreshToken = redisService.getValues("RT:" + email);
+        if (refreshToken.isEmpty()) {
+            throw new InvalidTokenException("로그인되어 있지 않은 상태입니다");
+        }
+
+        redisService.deleteValues("RT:" + email);
+    }
+
     private void checkDuplicatedEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent()) {
             log.debug("MemberServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
-            throw new DuplicateEmailException("이미 존재하는 이메일입니다!");
+            throw new DuplicateEmailException(email);
         }
     }
 
@@ -114,7 +119,7 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> member = memberRepository.findByNickname(verifiedRequestDto.getNickname());
         if (member.isPresent()) {
             log.debug("MemberServiceImpl.checkDuplicatedNickname exception occur nickname: {}", verifiedRequestDto.getNickname());
-            throw new DuplicateNicknameException("이미 존재하는 닉네임입니다!");
+            throw new DuplicateNicknameException(verifiedRequestDto.getNickname());
         }
     }
 
@@ -142,7 +147,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new VerificationFailedException("인증코드가 존재하지 않습니다. 다시 요청해주세요."));
 
         if (!redisAuthCode.equals(authCode)) {
-            throw new InvalidCredentialsException("인증코드가 일치하지 않습니다.");
+            throw new VerificationFailedException("인증코드가 일치하지 않습니다.");
         }
 
         redisService.setValues(VERIFIED_EMAIL_PREFIX + email, "true");
