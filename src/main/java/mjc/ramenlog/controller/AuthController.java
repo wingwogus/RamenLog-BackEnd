@@ -37,7 +37,7 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success("RefreshToken 재발급 성공", newToken));
     }
 
-    @PostMapping("/sendEmail")
+    @PostMapping("/send-email")
     @Operation(summary = "이메일 인증 코드 전송", description = "입력된 이메일로 인증 코드를 전송합니다.")
     public ResponseEntity<ApiResponse<Void>> sendMessage(@RequestBody EmailRequestDto emailRequestDto) {
         memberService.sendCodeToEmail(emailRequestDto.getEmail());
