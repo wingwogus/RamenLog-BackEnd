@@ -15,7 +15,8 @@ public enum ErrorCode {
     NOT_FOUND_SPOTLIKE(HttpStatus.NOT_FOUND, "NOT_FOUND_SPOTLIKE" ),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR"),
     NOT_FOUND_RESTAURANT(HttpStatus.NOT_FOUND, "NOT_FOUND_RESTAURANT" ),
-    ALREADY_SPOTLIKE(HttpStatus.CONFLICT, "ALREADY_SPOTLIKE" );
+    ALREADY_SPOTLIKE(HttpStatus.CONFLICT, "ALREADY_SPOTLIKE" ),
+    NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "NOT_FOUND_REVIEW"),;
 
     private final HttpStatus status;
     private final String message;
