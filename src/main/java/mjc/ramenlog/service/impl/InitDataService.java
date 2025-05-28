@@ -63,12 +63,31 @@ public class InitDataService {
 
         restaurantRepository.save(restaurant);
 
+        Restaurant restaurant2 = Restaurant.builder()
+                .name("옥토끼")
+                .address(Address.builder()
+                        .city("서울특별시")
+                        .town("은평구")
+                        .street("응암")
+                        .build())
+                .score(45)
+                .build();
+
+        restaurantRepository.save(restaurant2);
+
         SpotLike spotLike = SpotLike.builder()
                 .member(member1)
                 .restaurant(restaurant)
                 .build();
 
         spotLikeRepository.save(spotLike);
+
+        SpotLike spotLike2 = SpotLike.builder()
+                .member(member1)
+                .restaurant(restaurant2)
+                .build();
+
+        spotLikeRepository.save(spotLike2);
     }
 
 }

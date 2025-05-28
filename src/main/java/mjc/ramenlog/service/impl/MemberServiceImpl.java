@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mjc.ramenlog.domain.Member;
 import mjc.ramenlog.domain.Role;
+import mjc.ramenlog.domain.SpotLike;
 import mjc.ramenlog.dto.*;
 import mjc.ramenlog.jwt.JwtToken;
 import mjc.ramenlog.exception.*;
@@ -149,18 +150,12 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        List<RestaurantResponseDto> spotLikes = spotLikeRepository
-                .findByMember(member).stream()
-                .map(spotLike -> RestaurantResponseDto.from(spotLike.getRestaurant()))
-                .toList();
-
         return MemberResponseDto.builder()
                 .id(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .grade(member.getGrade().getName())
                 .profileImageUrl(member.getProfileImageUrl())
-                .spotLike(spotLikes)
                 .build();
     }
 

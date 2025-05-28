@@ -23,7 +23,6 @@ public class MemberController {
         MemberResponseDto information = memberService.getInformation(userDetails.getMember().getId());
 
         return ResponseEntity.ok(ApiResponse.success("정보 조회 성공", information));
-
     }
 
     @GetMapping("/{memberId}")

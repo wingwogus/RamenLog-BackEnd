@@ -31,7 +31,7 @@ public class SpotLikeServiceImpl implements SpotLikeService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        return spotLikeRepository.findByMember(member).stream()
+        return spotLikeRepository.findByMember(member).orElseThrow(NotFoundSpotLikeException::new).stream()
                 .map(spotLike -> RestaurantResponseDto.from(spotLike.getRestaurant()))
                 .toList();
     }
