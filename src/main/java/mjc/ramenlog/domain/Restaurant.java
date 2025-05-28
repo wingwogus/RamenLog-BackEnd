@@ -1,14 +1,18 @@
 package mjc.ramenlog.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Restaurant {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

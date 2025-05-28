@@ -1,4 +1,4 @@
-package mjc.ramenlog.dto.jwt;
+package mjc.ramenlog.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

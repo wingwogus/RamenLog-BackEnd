@@ -2,7 +2,6 @@ spring:
   config:
     import: classpath:application-secret.yml
 
-
   jpa:
     hibernate:
       ddl-auto: validate
@@ -13,3 +12,11 @@ spring:
 
   logging.level:
     org.hibernate.SQL: debug
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    operations-sorter: method
+  api-docs:
+    path: /v3/api-docs

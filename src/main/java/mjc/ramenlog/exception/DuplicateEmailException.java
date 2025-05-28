@@ -1,12 +1,9 @@
 package mjc.ramenlog.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+public class DuplicateEmailException extends BusinessException {
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class DuplicateEmailException extends RuntimeException {
-
-    public DuplicateEmailException(String message) {
-        super(message);
+    public DuplicateEmailException(String email) {
+        super(ErrorCode.DUPLICATE_EMAIL, email + "은 이미 존재하는 이메일입니다");
     }
 }
+
