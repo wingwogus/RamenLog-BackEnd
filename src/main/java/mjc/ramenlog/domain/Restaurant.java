@@ -29,6 +29,9 @@ public class Restaurant {
 
     private boolean isOpen;
 
+    private double latitude; //위도
+    private double longitude; //경도
+
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     private List<RestaurantImage> image = new ArrayList<>();
 
