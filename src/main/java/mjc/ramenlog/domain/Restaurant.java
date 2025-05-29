@@ -1,10 +1,8 @@
 package mjc.ramenlog.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +32,9 @@ public class Restaurant {
     private LocalDateTime closeTime;
 
     private boolean isOpen;
+
+    private double latitude; //위도
+    private double longitude; //경도
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     private List<RestaurantImage> image = new ArrayList<>();
