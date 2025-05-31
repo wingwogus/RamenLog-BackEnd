@@ -65,6 +65,20 @@ public class ReviewServiceImpl implements ReviewService {
         }
        
         reviewRepository.save(review);
+
+        // 5) restaurant.review 리스트를 이용해 리뷰 수와 평균 계산
+        int reviewCount = restaurant.getReview().size();
+        double totalRating = restaurant.getReview().stream()
+                .mapToDouble(Review::getRating)
+                .sum();
+        double averageRating = totalRating / reviewCount;
+
+        //    (2) 공식에 따라 score 계산
+        double computedScore = averageRating * 2.0
+                + Math.log(reviewCount + 1.0) * 3.0;
+
+        // 6) restaurant.score 업데이트
+        restaurant.setScore(computedScore);
     }
     
     @Override
