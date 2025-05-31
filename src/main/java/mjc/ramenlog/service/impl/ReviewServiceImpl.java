@@ -73,9 +73,12 @@ public class ReviewServiceImpl implements ReviewService {
                 .sum();
         double averageRating = totalRating / reviewCount;
 
-        //    (2) 공식에 따라 score 계산
+        // 공식에 따라 score 계산
         double computedScore = averageRating * 2.0
                 + Math.log(reviewCount + 1.0) * 3.0;
+
+        // 소수점 첫째 자리까지 반올림
+        computedScore = Math.round(computedScore * 10.0) / 10.0;
 
         // 6) restaurant.score 업데이트
         restaurant.setScore(computedScore);
