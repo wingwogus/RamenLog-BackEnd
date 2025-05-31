@@ -19,4 +19,6 @@ public class RestaurantRamen {
     private String name;
 
     private String imageUrl;
+
+    private String price;
 }
