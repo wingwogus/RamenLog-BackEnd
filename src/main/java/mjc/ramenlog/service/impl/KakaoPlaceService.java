@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -26,6 +27,7 @@ public class KakaoPlaceService {
 
     private static final String KAKAO_API_URL = "https://dapi.kakao.com/v2/local/search/keyword.json";
     private static final String KAKAO_API_KEY = "1e79ef1db1ffb08edf2bda1e71a9f8a7";
+    private final RestClient.Builder builder;
 
     public void searchAndSaveRamenShops(String keyword) {
         int page = 1;
@@ -49,13 +51,14 @@ public class KakaoPlaceService {
             KakaoApiResponse kakaoResponse = response.getBody();
             if (kakaoResponse != null && kakaoResponse.getDocuments() != null) {
                 for (KakaoPlace place : kakaoResponse.getDocuments()) {
-                    Restaurant r = new Restaurant();
-                    r.setName(place.getPlaceName());
-                    r.setAddress(new Address(place.getAddressName()));
-                    r.setLatitude(Double.parseDouble(place.getY()));
-                    r.setLongitude(Double.parseDouble(place.getX()));
+                    Restaurant r = Restaurant.builder()
+                            .name(place.getPlaceName())
+                            .address(new Address(place.getAddressName()))
+                            .latitude(Double.parseDouble(place.getY()))
+                            .longitude(Double.parseDouble(place.getX()))
+                            .build();
 
-                    System.out.println("저장 시도: " + r.getName());
+                    System.out.println("저장 시도: " + r.getName() );
                     System.out.println("주소: " + r.getAddress().getFullAddress());
                     System.out.println("위도: " + r.getLatitude() + ", 경도: " + r.getLongitude());
 

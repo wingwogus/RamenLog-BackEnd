@@ -26,14 +26,6 @@ public class Restaurant {
 
     private Double score;
 
-    private String description;
-
-    private LocalDateTime openTime;
-
-    private LocalDateTime closeTime;
-
-    private boolean isOpen;
-
     private double latitude; //위도
     private double longitude; //경도
 
