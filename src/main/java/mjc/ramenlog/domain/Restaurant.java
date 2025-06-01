@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
+import java.io.DataOutput;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Restaurant {
     @Embedded
     private Address address;
 
-    private int score;
+    private Double score;
 
     private double latitude; //위도
     private double longitude; //경도
@@ -39,4 +40,8 @@ public class Restaurant {
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     private List<RestaurantRamen> restaurantRamen = new ArrayList<>();
+
+    public void setScore(double score) {
+        this.score = score;
+    }
 }
