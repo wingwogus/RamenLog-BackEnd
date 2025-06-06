@@ -21,10 +21,8 @@ public class RestaurantResponseDto {
     private Address address;
 
     @Schema(description = "식당 평점")
-    private int score;
+    private Double score;
 
-    @Schema(description = "식당 설명")
-    private String description;
 
     public static RestaurantResponseDto from(Restaurant restaurant) {
         return RestaurantResponseDto.builder()
@@ -32,7 +30,6 @@ public class RestaurantResponseDto {
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
                 .score(restaurant.getScore())
-                .description(restaurant.getDescription())
                 .build();
     }
 }

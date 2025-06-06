@@ -1,11 +1,10 @@
 package mjc.ramenlog.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+
+import java.io.DataOutput;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +24,10 @@ public class Restaurant {
     @Embedded
     private Address address;
 
-    private int score;
+    private Double score;
 
-    private String description;
-
-    private LocalDateTime openTime;
-
-    private LocalDateTime closeTime;
-
-    private boolean isOpen;
+    private double latitude; //위도
+    private double longitude; //경도
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     private List<RestaurantImage> image = new ArrayList<>();
@@ -46,4 +40,8 @@ public class Restaurant {
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     private List<RestaurantRamen> restaurantRamen = new ArrayList<>();
+
+    public void setScore(double score) {
+        this.score = score;
+    }
 }
