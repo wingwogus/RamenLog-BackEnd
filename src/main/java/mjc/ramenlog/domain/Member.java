@@ -30,13 +30,14 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "grade_id")
+    @Enumerated(EnumType.STRING)
     private Grade grade;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<SpotLike> spotLike = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Review> review = new ArrayList<>();
 }

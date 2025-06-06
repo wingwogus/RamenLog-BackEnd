@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mjc.ramenlog.domain.Member;
 import mjc.ramenlog.domain.Role;
-import mjc.ramenlog.domain.SpotLike;
 import mjc.ramenlog.dto.*;
 import mjc.ramenlog.jwt.JwtToken;
 import mjc.ramenlog.exception.*;
@@ -12,7 +11,6 @@ import mjc.ramenlog.jwt.JwtTokenProvider;
 import mjc.ramenlog.repository.MemberRepository;
 import mjc.ramenlog.repository.SpotLikeRepository;
 import mjc.ramenlog.service.inf.MemberService;
-import mjc.ramenlog.service.inf.SpotLikeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,10 +21,8 @@ import org.springframework.stereotype.Service;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -145,17 +141,23 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberResponseDto getInformation(Long memberId) {
+    public MemberInfoResponseDto getInformation(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        return MemberResponseDto.builder()
+        return MemberInfoResponseDto.builder()
                 .id(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .grade(member.getGrade().getName())
+                .nextGrade(member.getGrade().getNextGrade().getName())
                 .profileImageUrl(member.getProfileImageUrl())
+                .reviewCount(member.getReview().size())
+                .likeCount(member.getSpotLike().size())
+                .startReviewCount(member.getGrade().getStartReviewCount())
+                .endReviewCount(member.getGrade().getEndReviewCount())
+                .remainingReviewCount(member.getGrade().getRemainingToNext(member.getReview().size()))
                 .build();
     }
 

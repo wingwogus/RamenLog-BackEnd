@@ -14,27 +14,17 @@ public class InitDataService {
     private final PasswordEncoder passwordEncoder;
     private final RestaurantRepository restaurantRepository;
     private final SpotLikeRepository spotLikeRepository;
-    private final GradeRepository gradeRepository;
     private final ReviewRepository reviewRepository;
 
     @PostConstruct
     public void init() {
-
-        Grade grade = Grade.builder()
-                .name("라오타")
-                .count(10)
-                .build();
-
-        gradeRepository.save(grade);
-
-
         Member member1 = Member.builder()
                 .email("user1@naver.com")
                 .nickname("user1")
                 .role(Role.USER)
                 .profileImageUrl("https://ui-avatars.com/api/?name=Jae+Hyun&background=random")
                 .password(passwordEncoder.encode("1234"))
-                .grade(grade)
+                .grade(Grade.RAMEN_NOOB)
                 .build();
 
         Member member2 = Member.builder()
@@ -43,21 +33,19 @@ public class InitDataService {
                 .role(Role.USER)
                 .profileImageUrl("https://ui-avatars.com/api/?name=Jae+Hyun&background=random")
                 .password(passwordEncoder.encode("1234"))
-                .grade(grade)
+                .grade(Grade.RAMEN_LEGEND)
                 .build();
 
         memberRepository.save(member1);
         memberRepository.save(member2);
 
-        Restaurant restaurant = Restaurant.builder()
+        Restaurant restaurant1 = Restaurant.builder()
                 .name("맛스구")
                 .address(Address.builder()
                         .fullAddress("서울시 은평구 응암동")
                         .build())
                 .avgRating(4.9)
                 .build();
-
-        restaurantRepository.save(restaurant);
 
         Restaurant restaurant2 = Restaurant.builder()
                 .name("옥토끼")
@@ -67,30 +55,29 @@ public class InitDataService {
                 .avgRating(4.8)
                 .build();
 
+        restaurantRepository.save(restaurant1);
         restaurantRepository.save(restaurant2);
 
-        SpotLike spotLike = SpotLike.builder()
-                .member(member1)
-                .restaurant(restaurant)
-                .build();
+        SpotLike spotLike = new SpotLike(restaurant1, member1);
+        SpotLike spotLike2 = new SpotLike(restaurant2, member1);
 
         spotLikeRepository.save(spotLike);
-
-        SpotLike spotLike2 = SpotLike.builder()
-                .member(member1)
-                .restaurant(restaurant2)
-                .build();
-
         spotLikeRepository.save(spotLike2);
 
-        Review review = Review.builder()
-                .member(member1)
-                .restaurant(restaurant)
+        Review review1 = Review.builder()
                 .content("앙 기모띄")
                 .rating(3.5)
                 .build();
+        review1.setRestaurantAndMember(restaurant1,  member1);
 
-        reviewRepository.save(review);
+        Review review2 = Review.builder()
+                .content("앙 기모띄")
+                .rating(3.5)
+                .build();
+        review2.setRestaurantAndMember(restaurant2,  member1);
+
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
     }
 
 }

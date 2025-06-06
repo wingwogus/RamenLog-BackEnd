@@ -47,12 +47,12 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 3) Review 엔티티 생성 & 저장
         Review review = Review.builder()
-                .member(member)
-                .restaurant(restaurant)
                 .rating(dto.getRating())
                 .content(dto.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        review.setRestaurantAndMember(restaurant, member);
 
 
         // 4) 이미지가 있으면 저장
