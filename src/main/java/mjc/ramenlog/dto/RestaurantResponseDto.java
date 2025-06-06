@@ -21,7 +21,7 @@ public class RestaurantResponseDto {
     private Address address;
 
     @Schema(description = "식당 평점")
-    private Double score;
+    private Double avgRating;
 
 
     public static RestaurantResponseDto from(Restaurant restaurant) {
@@ -29,7 +29,7 @@ public class RestaurantResponseDto {
                 .id(restaurant.getId())
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
-                .score(restaurant.getScore())
+                .avgRating(restaurant.getAvgRating())
                 .build();
     }
 }

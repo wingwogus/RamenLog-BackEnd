@@ -44,7 +44,7 @@ public class InitDataService {
                 .address(Address.builder()
                         .fullAddress("서울시 은평구 응암동")
                         .build())
-                .score(100.0)
+                .avgRating(4.9)
                 .build();
 
         Restaurant restaurant2 = Restaurant.builder()
@@ -52,7 +52,7 @@ public class InitDataService {
                 .address(Address.builder()
                         .fullAddress("서울시 은평구 응암동")
                         .build())
-                .score(45.0)
+                .avgRating(4.8)
                 .build();
 
         restaurantRepository.save(restaurant1);

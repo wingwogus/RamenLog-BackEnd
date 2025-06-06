@@ -79,9 +79,11 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 소수점 첫째 자리까지 반올림
         computedScore = Math.round(computedScore * 10.0) / 10.0;
+        averageRating = Math.round(averageRating * 10.0) / 10.0;
 
-        // 6) restaurant.score 업데이트
+        // 6) restaurant.score와 avgRating 업데이트
         restaurant.setScore(computedScore);
+        restaurant.setAvgRating(averageRating);
     }
     
     @Override
