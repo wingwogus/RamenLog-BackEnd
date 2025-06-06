@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import mjc.ramenlog.domain.Restaurant;
 import mjc.ramenlog.dto.ApiResponse;
 import mjc.ramenlog.dto.RestaurantDto;
+import mjc.ramenlog.dto.RestaurantResponseDto;
 import mjc.ramenlog.repository.RestaurantRepository;
+import mjc.ramenlog.service.inf.RestaurantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
     private final RestaurantRepository restaurantRepository;
+    private final RestaurantService restaurantService;
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<RestaurantDto>>> SearchRestaurant(@RequestParam String keyword){
@@ -23,5 +26,11 @@ public class RestaurantController {
                 .map(RestaurantDto::from)
                 .toList();
         return ResponseEntity.ok(ApiResponse.success(dtoList));
+    }
+    @PostMapping("/random")
+    public ResponseEntity<ApiResponse<RestaurantResponseDto>> getRandomRestaurant() {
+        Restaurant random = restaurantService.getRandomRestaurant();
+        RestaurantResponseDto dto = RestaurantResponseDto.from(random);
+        return ResponseEntity.ok(ApiResponse.success("랜덤 추천 성공", dto));
     }
 }
