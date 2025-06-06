@@ -3,10 +3,7 @@ package mjc.ramenlog.service.impl;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import mjc.ramenlog.domain.*;
-import mjc.ramenlog.repository.GradeRepository;
-import mjc.ramenlog.repository.MemberRepository;
-import mjc.ramenlog.repository.RestaurantRepository;
-import mjc.ramenlog.repository.SpotLikeRepository;
+import mjc.ramenlog.repository.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +15,7 @@ public class InitDataService {
     private final RestaurantRepository restaurantRepository;
     private final SpotLikeRepository spotLikeRepository;
     private final GradeRepository gradeRepository;
+    private final ReviewRepository reviewRepository;
 
     @PostConstruct
     public void init() {
@@ -64,11 +62,9 @@ public class InitDataService {
         Restaurant restaurant2 = Restaurant.builder()
                 .name("옥토끼")
                 .address(Address.builder()
-                        .city("서울특별시")
-                        .town("은평구")
-                        .street("응암")
+                        .fullAddress("서울시 은평구 응암동")
                         .build())
-                .score(45)
+                .score(45.0)
                 .build();
 
         restaurantRepository.save(restaurant2);
@@ -86,6 +82,15 @@ public class InitDataService {
                 .build();
 
         spotLikeRepository.save(spotLike2);
+
+        Review review = Review.builder()
+                .member(member1)
+                .restaurant(restaurant)
+                .content("앙 기모띄")
+                .rating(3.5)
+                .build();
+
+        reviewRepository.save(review);
     }
 
 }
