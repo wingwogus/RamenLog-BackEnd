@@ -48,11 +48,7 @@ public class SpotLikeServiceImpl implements SpotLikeService {
                 .findByRestaurantAndMember(restaurant, member)
                 .ifPresent(like -> { throw new AlreadySpotLikeException();});
 
-        spotLikeRepository.save(
-                SpotLike.builder()
-                .restaurant(restaurant)
-                .member(member)
-                .build());
+        spotLikeRepository.save(new SpotLike(restaurant, member));
     }
 
     @Override
@@ -87,11 +83,7 @@ public class SpotLikeServiceImpl implements SpotLikeService {
                 })
                 .orElseGet(() -> {
                     // 없으면 저장, true 리턴
-                    spotLikeRepository.save(
-                            SpotLike.builder()
-                                    .restaurant(restaurant)
-                                    .member(member)
-                                    .build());
+                    spotLikeRepository.save(new SpotLike(restaurant, member));
                     return true;
                 });
     }

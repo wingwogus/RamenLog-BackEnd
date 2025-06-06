@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
 public class SpotLike {
     @Id
@@ -23,4 +22,12 @@ public class SpotLike {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public SpotLike(Restaurant restaurant, Member member) {
+        this.restaurant = restaurant;
+        this.member = member;
+
+        restaurant.getSpotLike().add(this);
+        member.getSpotLike().add(this);
+    }
 }

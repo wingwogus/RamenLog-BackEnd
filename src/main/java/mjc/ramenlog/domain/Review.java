@@ -37,4 +37,11 @@ public class Review {
 
     private double rating;
 
+    /* 연관관계 메소드 */
+    public void setRestaurantAndMember(Restaurant restaurant, Member member) {
+        this.restaurant = restaurant;
+        restaurant.getReview().add(this);
+        this.member = member;
+        member.getReview().add(this);
+    }
 }

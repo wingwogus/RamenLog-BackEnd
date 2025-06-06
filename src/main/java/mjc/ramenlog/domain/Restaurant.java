@@ -29,16 +29,20 @@ public class Restaurant {
     private double latitude; //위도
     private double longitude; //경도
 
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "restaurant")
     private List<RestaurantImage> image = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "restaurant")
     private List<SpotLike> spotLike = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "restaurant")
     private List<Review> review = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "restaurant")
     private List<RestaurantRamen> restaurantRamen = new ArrayList<>();
 
     public void setScore(double score) {
