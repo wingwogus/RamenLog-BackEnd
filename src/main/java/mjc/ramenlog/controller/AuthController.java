@@ -15,10 +15,10 @@ import mjc.ramenlog.service.inf.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Auth", description = "인증 관련 API")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "Auth", description = "인증 관련 API")
 public class AuthController {
 
     private final MemberService memberService;

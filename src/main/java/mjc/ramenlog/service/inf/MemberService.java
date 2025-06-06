@@ -13,4 +13,6 @@ public interface MemberService {
     void verifiedCode(VerifiedRequestDto verifiedRequestDto);
     void checkDuplicatedNickname(VerifiedNicknameRequest verifiedRequestDto);
     void logout(String email);
+
+    MemberResponseDto getInformation(Long memberId);
 }

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,10 +31,11 @@ public class SpotLikeServiceImpl implements SpotLikeService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        return spotLikeRepository.findByMember(member).stream()
+        return spotLikeRepository.findByMember(member).orElseThrow(NotFoundSpotLikeException::new).stream()
                 .map(spotLike -> RestaurantResponseDto.from(spotLike.getRestaurant()))
-                .collect(Collectors.toList());
+                .toList();
     }
+
     @Override
     public void addLike(Long spotId, Long memberId) {
         Member member = memberRepository.findById(memberId)

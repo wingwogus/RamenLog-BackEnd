@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mjc.ramenlog.domain.Member;
 import mjc.ramenlog.domain.Role;
+import mjc.ramenlog.domain.SpotLike;
 import mjc.ramenlog.dto.*;
 import mjc.ramenlog.jwt.JwtToken;
 import mjc.ramenlog.exception.*;
 import mjc.ramenlog.jwt.JwtTokenProvider;
 import mjc.ramenlog.repository.MemberRepository;
+import mjc.ramenlog.repository.SpotLikeRepository;
 import mjc.ramenlog.service.inf.MemberService;
+import mjc.ramenlog.service.inf.SpotLikeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,8 +23,10 @@ import org.springframework.stereotype.Service;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -34,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
     private final RedisService redisService;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final SpotLikeRepository spotLikeRepository;
     private static final String AUTH_CODE_PREFIX = "AuthCode ";
     private static final String VERIFIED_EMAIL_PREFIX = "VerifiedEmail ";
 
@@ -123,21 +128,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    private String createCode() {
-        int lenth = 6;
-        try {
-            Random random = SecureRandom.getInstanceStrong();
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < lenth; i++) {
-                builder.append(random.nextInt(10));
-            }
-            return builder.toString();
-        } catch (NoSuchAlgorithmException e) {
-            log.debug("MemberService.createCode() exception occur");
-            throw new BusinessException(ErrorCode.INTERNAL_ERROR, "코드 생성 오류 발생");
-        }
-    }
-
+    @Override
     public void verifiedCode(VerifiedRequestDto verifiedRequestDto) {
         String email = verifiedRequestDto.getEmail();
         String authCode = verifiedRequestDto.getCode();
@@ -151,5 +142,35 @@ public class MemberServiceImpl implements MemberService {
         }
 
         redisService.setValues(VERIFIED_EMAIL_PREFIX + email, "true");
+    }
+
+    @Override
+    public MemberResponseDto getInformation(Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        return MemberResponseDto.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .grade(member.getGrade().getName())
+                .profileImageUrl(member.getProfileImageUrl())
+                .build();
+    }
+
+    private String createCode() {
+        int lenth = 6;
+        try {
+            Random random = SecureRandom.getInstanceStrong();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < lenth; i++) {
+                builder.append(random.nextInt(10));
+            }
+            return builder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            log.debug("MemberService.createCode() exception occur");
+            throw new BusinessException(ErrorCode.INTERNAL_ERROR, "코드 생성 오류 발생");
+        }
     }
 }
