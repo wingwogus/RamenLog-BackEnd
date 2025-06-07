@@ -29,7 +29,7 @@ public class LikeController {
         return ResponseEntity.ok(ApiResponse.success("좋아요 조회 성공", likedRestaurants));
     }
 
-    @PostMapping("/{restaurantId}/like")
+    @PostMapping("/{restaurantId}")
     @Operation(summary = "찜하기", description = "라멘집 id를 사용해 찜 합니다.")
     public ResponseEntity<ApiResponse<Boolean>> toggleLike(
             @PathVariable Long restaurantId,
@@ -40,5 +40,4 @@ public class LikeController {
 
         return ResponseEntity.ok(ApiResponse.success(liked));
     }
-
 }
