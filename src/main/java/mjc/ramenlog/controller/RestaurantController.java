@@ -33,4 +33,13 @@ public class RestaurantController {
         RestaurantResponseDto dto = RestaurantResponseDto.from(random);
         return ResponseEntity.ok(ApiResponse.success("랜덤 추천 성공", dto));
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<RestaurantDto>>> getAllRestaurants() {
+        List<Restaurant> all = restaurantRepository.findAll();
+        List<RestaurantDto> dtoList = all.stream()
+                .map(RestaurantDto::from)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(dtoList));
+    }
 }
