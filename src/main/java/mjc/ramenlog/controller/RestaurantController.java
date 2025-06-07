@@ -27,10 +27,17 @@ public class RestaurantController {
                 .toList();
         return ResponseEntity.ok(ApiResponse.success(dtoList));
     }
-    @PostMapping("/random")
+
+    @GetMapping("/random")
     public ResponseEntity<ApiResponse<RestaurantResponseDto>> getRandomRestaurant() {
         Restaurant random = restaurantService.getRandomRestaurant();
         RestaurantResponseDto dto = RestaurantResponseDto.from(random);
         return ResponseEntity.ok(ApiResponse.success("랜덤 추천 성공", dto));
+    }
+
+    @GetMapping("/rank")
+    public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> getRestaurantRanking() {
+        List<RestaurantResponseDto> restaurantSortScore = restaurantService.getRestaurantSortScore();
+        return ResponseEntity.ok(ApiResponse.success("랭킹 조회 성공", restaurantSortScore));
     }
 }
