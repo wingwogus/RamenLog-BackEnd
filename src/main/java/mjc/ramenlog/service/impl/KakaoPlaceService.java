@@ -56,6 +56,8 @@ public class KakaoPlaceService {
                             .address(new Address(place.getAddressName()))
                             .latitude(Double.parseDouble(place.getY()))
                             .longitude(Double.parseDouble(place.getX()))
+                            .score(50.0)
+                            .avgRating(3.0)
                             .build();
 
                     System.out.println("저장 시도: " + r.getName() );
