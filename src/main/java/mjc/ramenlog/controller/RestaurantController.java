@@ -37,6 +37,15 @@ public class RestaurantController {
         return ResponseEntity.ok(ApiResponse.success("랜덤 추천 성공", dto));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<RestaurantDto>>> getAllRestaurants() {
+        List<Restaurant> all = restaurantRepository.findAll();
+        List<RestaurantDto> dtoList = all.stream()
+                .map(RestaurantDto::from)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(dtoList));
+    }
+
     @GetMapping("/rank")
     public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> getRestaurantRanking() {
         List<RestaurantResponseDto> restaurantSortScore = restaurantService.getRestaurantSortScore();
