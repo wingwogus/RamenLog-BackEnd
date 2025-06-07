@@ -23,6 +23,9 @@ public class RestaurantResponseDto {
     @Schema(description = "식당 평점")
     private Double avgRating;
 
+    @Schema(description = "식당 이미지")
+    private String imageUrl;
+
 
     public static RestaurantResponseDto from(Restaurant restaurant) {
         return RestaurantResponseDto.builder()
@@ -30,6 +33,7 @@ public class RestaurantResponseDto {
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
                 .avgRating(restaurant.getAvgRating())
+                .imageUrl(restaurant.getImageUrl())
                 .build();
     }
 }

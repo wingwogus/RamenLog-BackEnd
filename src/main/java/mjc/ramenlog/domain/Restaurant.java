@@ -30,9 +30,7 @@ public class Restaurant {
     private double latitude; //위도
     private double longitude; //경도
 
-    @Builder.Default
-    @OneToMany(mappedBy = "restaurant")
-    private List<RestaurantImage> image = new ArrayList<>();
+    private String imageUrl;
 
     @Builder.Default
     @OneToMany(mappedBy = "restaurant")
