@@ -13,5 +13,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     boolean existsByNameAndAddressFullAddress(String name, String fullAddress);
 
     List<Restaurant> findByNameContainingIgnoreCase(String name);
+
+    // score 기준 내림차순 정렬
+    Optional<List<Restaurant>> findTop10ByOrderByScoreDesc();
 }
 

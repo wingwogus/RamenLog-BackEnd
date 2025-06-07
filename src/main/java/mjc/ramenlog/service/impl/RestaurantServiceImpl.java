@@ -2,6 +2,8 @@ package mjc.ramenlog.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import mjc.ramenlog.domain.Restaurant;
+import mjc.ramenlog.dto.RestaurantResponseDto;
+import mjc.ramenlog.exception.NotFoundRestaurantException;
 import mjc.ramenlog.repository.RestaurantRepository;
 import mjc.ramenlog.service.inf.RestaurantService;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ResturantServiceImpl implements RestaurantService {
+public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
 
@@ -27,5 +29,15 @@ public class ResturantServiceImpl implements RestaurantService {
 
         int randomIndex = new Random().nextInt(all.size());
         return all.get(randomIndex);
+    }
+
+    @Override
+    public List<RestaurantResponseDto> getRestaurantSortScore() {
+        List<Restaurant> restaurants = restaurantRepository.findTop10ByOrderByScoreDesc()
+                .orElseThrow(NotFoundRestaurantException::new);
+
+        return restaurants.stream()
+                .map(RestaurantResponseDto::from)
+                .toList();
     }
 }
