@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mjc.ramenlog.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -28,10 +29,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**" ,
                                 "/api/import/**",
-                                "/api/restaurant/search",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/restaurant/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

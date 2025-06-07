@@ -5,9 +5,11 @@ import mjc.ramenlog.domain.Restaurant;
 import mjc.ramenlog.dto.ApiResponse;
 import mjc.ramenlog.dto.RestaurantDto;
 import mjc.ramenlog.dto.RestaurantResponseDto;
+import mjc.ramenlog.jwt.CustomUserDetails;
 import mjc.ramenlog.repository.RestaurantRepository;
 import mjc.ramenlog.service.inf.RestaurantService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,5 +50,15 @@ public class RestaurantController {
     public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> getRestaurantRanking() {
         List<RestaurantResponseDto> restaurantSortScore = restaurantService.getRestaurantSortScore();
         return ResponseEntity.ok(ApiResponse.success("랭킹 조회 성공", restaurantSortScore));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<RestaurantResponseDto>> getRestaurantById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        RestaurantResponseDto restaurant = restaurantService.getRestaurant(id, customUserDetails.getMember().getId());
+
+        return ResponseEntity.ok(ApiResponse.success("레스토랑 조회 완료", restaurant));
     }
 }

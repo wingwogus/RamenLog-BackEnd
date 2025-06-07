@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Embedded;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Setter;
 import mjc.ramenlog.domain.Address;
 import mjc.ramenlog.domain.Restaurant;
 
@@ -23,6 +24,13 @@ public class RestaurantResponseDto {
     @Schema(description = "식당 평점")
     private Double avgRating;
 
+    @Schema(description = "식당 이미지")
+    private String imageUrl;
+
+    @Setter
+    @Schema(description = "식당 찜 여부")
+    private boolean isLiked;
+
 
     public static RestaurantResponseDto from(Restaurant restaurant) {
         return RestaurantResponseDto.builder()
@@ -30,6 +38,7 @@ public class RestaurantResponseDto {
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
                 .avgRating(restaurant.getAvgRating())
+                .imageUrl(restaurant.getImageUrl())
                 .build();
     }
 }
