@@ -9,6 +9,7 @@ import mjc.ramenlog.dto.GoogleApiResponse;
 import mjc.ramenlog.dto.KakaoApiResponse;
 import mjc.ramenlog.dto.KakaoPlace;
 import mjc.ramenlog.repository.RestaurantRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,14 @@ import java.util.Set;
 public class GooglePlaceService {
     private final RestTemplate restTemplate;
     private final RestaurantRepository restaurantRepository;
+    @Value("${google.key}")
+    String key;
+    @Value("${cloudinary.key}")
+    String cloudinaryKey;
+    @Value("${cloudinary.secret}")
+    String cloudinarySecret;
+    @Value("${cloudinary.name}")
+    String cloudinaryName;
 
     public void findRestaurantAndSave() {
         List<String> regions = List.of(
@@ -41,6 +50,7 @@ public class GooglePlaceService {
 
         Set<String> savedNames = new HashSet<>();
 
+
         for (String region : regions) {
             String nextToken = null;
             boolean isFirstRequest = true;
@@ -48,7 +58,7 @@ public class GooglePlaceService {
             while (isFirstRequest || nextToken != null) {
                 String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
                         + region + " 라멘"
-                        + "&key=AIzaSyA1XCQwvYTPxSnM-PkSzSePWij3BwxZh7Q"
+                        + "&key=" + key
                         + "&language=ko";
 
                 if (!isFirstRequest) {
@@ -85,7 +95,7 @@ public class GooglePlaceService {
                                 String apiUrl = "https://maps.googleapis.com/maps/api/place/photo"
                                         + "?maxwidth=800"
                                         + "&photo_reference=" + photoReference
-                                        + "&key=" + "AIzaSyA1XCQwvYTPxSnM-PkSzSePWij3BwxZh7Q";
+                                        + "&key="+key;
 
                                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) new java.net.URL(apiUrl).openConnection();
                                 conn.setInstanceFollowRedirects(false);
@@ -98,10 +108,9 @@ public class GooglePlaceService {
                                         byte[] bytes = input.readAllBytes();
                                         Cloudinary cloudinary = new Cloudinary(
                                                 ObjectUtils.asMap(
-                                                        "cloud_name", "dyzg8xb4n",
-                                                        "api_key", "862213348176413",
-                                                        "api_secret", "jTjOZjAq4KTEK0OXigQRv2kHOuE"
-                                                )
+                                                        "cloud_name", cloudinaryName,
+                                                        "api_key", cloudinaryKey,
+                                                        "api_secret", cloudinarySecret)
                                         );
                                         Map uploadResult = cloudinary.uploader().upload(bytes, ObjectUtils.asMap(
                                                 "public_id", "restaurant_images/" + place.getPlaceId(),

@@ -6,6 +6,7 @@ import mjc.ramenlog.domain.Restaurant;
 import mjc.ramenlog.dto.KakaoApiResponse;
 import mjc.ramenlog.dto.KakaoPlace;
 import mjc.ramenlog.repository.RestaurantRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,7 +27,9 @@ public class KakaoPlaceService {
     private final RestaurantRepository restaurantRepository;
 
     private static final String KAKAO_API_URL = "https://dapi.kakao.com/v2/local/search/keyword.json";
-    private static final String KAKAO_API_KEY = "1e79ef1db1ffb08edf2bda1e71a9f8a7";
+    @Value("${kakao.key}")
+    private String KAKAO_API_KEY;
+
     private final RestClient.Builder builder;
 
     public void searchAndSaveRamenShops(String keyword) {
