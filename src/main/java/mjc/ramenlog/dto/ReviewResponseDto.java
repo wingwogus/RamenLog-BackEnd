@@ -18,10 +18,13 @@ public class ReviewResponseDto {
     @Schema(description = "리뷰 내용", example = "면이 쫄깃하고 국물이 오동통통!")
     private String content;
 
+    private String nickname;
+
     private List<String> images = new ArrayList<>();
 
     public ReviewResponseDto(Review review) {
         restaurantName = review.getRestaurant().getName();
+        nickname = review.getMember().getNickname();
         rating = review.getRating();
         content = review.getContent();
     }
