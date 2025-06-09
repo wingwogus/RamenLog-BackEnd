@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import mjc.ramenlog.domain.Address;
 import mjc.ramenlog.domain.Restaurant;
 import mjc.ramenlog.dto.GoogleApiResponse;
-import mjc.ramenlog.dto.KakaoApiResponse;
-import mjc.ramenlog.dto.KakaoPlace;
 import mjc.ramenlog.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;

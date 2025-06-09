@@ -43,7 +43,7 @@ public class RestaurantController {
         List<RestaurantDto> dtoList = all.stream()
                 .map(RestaurantDto::from)
                 .toList();
-        return ResponseEntity.ok(ApiResponse.success(dtoList));
+        return ResponseEntity.ok(ApiResponse.success("모든 목록 조회 성공", dtoList));
     }
 
     @GetMapping("/rank")
