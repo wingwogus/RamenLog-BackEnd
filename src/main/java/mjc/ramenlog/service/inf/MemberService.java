@@ -1,9 +1,7 @@
-package mjc.ramenlog.service;
+package mjc.ramenlog.service.inf;
 
-import mjc.ramenlog.dto.LoginRequestDto;
-import mjc.ramenlog.dto.ReissueRequestDto;
-import mjc.ramenlog.dto.SignUpRequestDto;
-import mjc.ramenlog.dto.jwt.JwtToken;
+import mjc.ramenlog.dto.*;
+import mjc.ramenlog.jwt.JwtToken;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,5 +10,9 @@ public interface MemberService {
     JwtToken reissue(ReissueRequestDto request);
     void signUp(SignUpRequestDto signUpRequestDto);
     void sendCodeToEmail(String toEmail);
-    boolean verifiedCode(String email, String authCode);
+    void verifiedCode(VerifiedRequestDto verifiedRequestDto);
+    void checkDuplicatedNickname(VerifiedNicknameRequest verifiedRequestDto);
+    void logout(String email);
+
+    MemberInfoResponseDto getInformation(Long memberId);
 }

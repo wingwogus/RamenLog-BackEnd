@@ -1,8 +1,8 @@
-package mjc.ramenlog.service;
+package mjc.ramenlog.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import mjc.ramenlog.domain.Member;
-import mjc.ramenlog.dto.jwt.CustomUserDetails;
+import mjc.ramenlog.jwt.CustomUserDetails;
 import mjc.ramenlog.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
