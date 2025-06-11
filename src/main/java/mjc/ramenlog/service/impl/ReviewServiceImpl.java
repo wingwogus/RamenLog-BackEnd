@@ -99,4 +99,17 @@ public class ReviewServiceImpl implements ReviewService {
                 .map(ReviewResponseDto::new)
                 .toList();
     }
+
+    @Override
+    public List<ReviewResponseDto> listReviewByRestaurant(Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(NotFoundRestaurantException::new);
+
+        List<Review> reviews = reviewRepository.findByRestaurant(restaurant)
+                .orElseThrow(NotFoundReviewException::new);
+
+        return reviews.stream()
+                .map(ReviewResponseDto::new)
+                .toList();
+    }
 }

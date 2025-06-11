@@ -10,4 +10,6 @@ public interface ReviewService {
     void saveReview(Long memberId, ReviewRequestDto dto, List<MultipartFile> images);
 
     List<ReviewResponseDto> listReviewByMember(Long memberId);
+
+    List<ReviewResponseDto> listReviewByRestaurant(Long restaurantId);
 }

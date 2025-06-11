@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import mjc.ramenlog.domain.Review;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class ReviewResponseDto {
 
     private String nickname;
 
+    private LocalDateTime createdAt;
+
     private List<String> images = new ArrayList<>();
 
     public ReviewResponseDto(Review review) {
@@ -27,5 +30,6 @@ public class ReviewResponseDto {
         nickname = review.getMember().getNickname();
         rating = review.getRating();
         content = review.getContent();
+        createdAt = review.getCreatedAt();
     }
 }

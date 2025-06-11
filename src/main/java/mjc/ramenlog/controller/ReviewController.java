@@ -37,7 +37,7 @@ public class ReviewController {
         return ResponseEntity.ok(ApiResponse.success("리뷰 등록 성공"));
     }
 
-    @PostMapping("/list")
+    @GetMapping("/")
     public  ResponseEntity<ApiResponse<List<ReviewResponseDto>>> getReviews(
             @AuthenticationPrincipal CustomUserDetails userDetails){
         Long memberId = userDetails.getMember().getId();
@@ -46,5 +46,10 @@ public class ReviewController {
         return ResponseEntity.ok(ApiResponse.success("리뷰 조회 성공", data));
     }
 
+    @GetMapping("/{restaurantId}")
+    public ResponseEntity<ApiResponse<List<ReviewResponseDto>>> getReviewsByRestaurant(@PathVariable Long restaurantId){
+        List<ReviewResponseDto> data = reviewService.listReviewByRestaurant(restaurantId);
 
+        return ResponseEntity.ok(ApiResponse.success("리뷰 조회 성공", data));
+    }
 }

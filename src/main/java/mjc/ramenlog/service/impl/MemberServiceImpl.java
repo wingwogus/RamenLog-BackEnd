@@ -2,6 +2,7 @@ package mjc.ramenlog.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mjc.ramenlog.domain.Grade;
 import mjc.ramenlog.domain.Member;
 import mjc.ramenlog.domain.Role;
 import mjc.ramenlog.dto.*;
@@ -81,6 +82,7 @@ public class MemberServiceImpl implements MemberService {
                 .email(signUpRequestDto.getEmail())
                 .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
                 .nickname(signUpRequestDto.getNickname())
+                .grade(Grade.RAMEN_NOOB)
                 .role(Role.USER)
                 .build();
 

@@ -1,6 +1,7 @@
 package mjc.ramenlog.repository;
 
 import mjc.ramenlog.domain.Member;
+import mjc.ramenlog.domain.Restaurant;
 import mjc.ramenlog.domain.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +10,6 @@ import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<List<Review>> findByMember(Member member);
+
+    Optional<List<Review>> findByRestaurant(Restaurant restaurant);
 }
