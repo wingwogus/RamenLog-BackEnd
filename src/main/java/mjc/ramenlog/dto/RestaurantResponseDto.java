@@ -27,6 +27,12 @@ public class RestaurantResponseDto {
     @Schema(description = "식당 이미지")
     private String imageUrl;
 
+    @Schema(description = "식당 좌표 : 경도")
+    private double longitude;
+
+    @Schema(description = "식당 좌표 : 위도")
+    private double latitude;
+
     @Setter
     @Schema(description = "식당 찜 여부")
     private boolean isLiked;
@@ -37,6 +43,8 @@ public class RestaurantResponseDto {
                 .id(restaurant.getId())
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
+                .longitude(restaurant.getLongitude())
+                .latitude(restaurant.getLatitude())
                 .avgRating(restaurant.getAvgRating())
                 .imageUrl(restaurant.getImageUrl())
                 .build();
