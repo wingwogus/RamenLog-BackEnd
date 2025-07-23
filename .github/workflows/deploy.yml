@@ -17,9 +17,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Rsync ramenlog to server
+      - name: Rsync ramenlog backend to server
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/apps/ramenlog/
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/apps/ramenlog/backend/
 
       - name: Build and restart containers
         run: |
