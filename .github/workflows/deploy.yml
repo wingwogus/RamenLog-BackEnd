@@ -17,9 +17,15 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Rsync ramenlog backend to server
+      - name: Rsync backend to server
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/apps/ramenlog/backend/
+          rsync -avz --exclude='.env' ./ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/apps/ramenlog/backend/
+
+      - name: Rsync docker-compose.yml to server
+        run: |
+          rsync docker-compose.yml \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/apps/ramenlog/
 
       - name: Build and restart containers
         run: |
