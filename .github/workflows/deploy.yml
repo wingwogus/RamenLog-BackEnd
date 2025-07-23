@@ -19,7 +19,7 @@ jobs:
 
       - name: Rsync ramenlog to server
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./apps/ramenlog/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/apps/ramenlog/
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/apps/ramenlog/
 
       - name: Build and restart containers
         run: |
