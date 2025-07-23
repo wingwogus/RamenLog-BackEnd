@@ -32,14 +32,14 @@ services:
       - npm-net
     restart: unless-stopped
 
-  ramenlog-frontend:
-    build: ./frontend
-    container_name: ramenlog-frontend
-    ports:
-      - "3000:3000"
-    networks:
-      - npm-net
-    restart: unless-stopped
+#  ramenlog-frontend:
+#    build: ./frontend
+#    container_name: ramenlog-frontend
+#    ports:
+#      - "3000:3000"
+#    networks:
+#      - npm-net
+#   restart: unless-stopped
 
 volumes:
   mysql-data:
