@@ -65,7 +65,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("회원가입에 성공하였습니다", null));
     }
 
-    @PostMapping("/")
+    @PostMapping
     @Operation(summary = "토큰 검증 테스트", description = "AccessToken을 통한 사용자 확인 테스트입니다.")
     public ResponseEntity<String> test(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(userDetails.getUsername());

@@ -24,7 +24,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/")
+    @PostMapping
     @Operation(summary = "리뷰 작성", description = "리뷰 텍스트와 최대 3장의 이미지를 업로드합니다.")
     public ResponseEntity<ApiResponse<String>> createReview(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -37,7 +37,7 @@ public class ReviewController {
         return ResponseEntity.ok(ApiResponse.success("리뷰 등록 성공"));
     }
 
-    @GetMapping("/")
+    @GetMapping
     public  ResponseEntity<ApiResponse<List<ReviewResponseDto>>> getReviews(
             @AuthenticationPrincipal CustomUserDetails userDetails){
         Long memberId = userDetails.getMember().getId();

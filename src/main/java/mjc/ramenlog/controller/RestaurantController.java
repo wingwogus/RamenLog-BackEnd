@@ -3,7 +3,6 @@ package mjc.ramenlog.controller;
 import lombok.RequiredArgsConstructor;
 import mjc.ramenlog.domain.Restaurant;
 import mjc.ramenlog.dto.ApiResponse;
-import mjc.ramenlog.dto.RestaurantDto;
 import mjc.ramenlog.dto.RestaurantResponseDto;
 import mjc.ramenlog.jwt.CustomUserDetails;
 import mjc.ramenlog.repository.RestaurantRepository;
@@ -16,16 +15,16 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/restaurant")
+@RequestMapping("/api/restaurants")
 public class RestaurantController {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantService restaurantService;
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<RestaurantDto>>> SearchRestaurant(@RequestParam String keyword){
+    public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> SearchRestaurant(@RequestParam String keyword){
         List<Restaurant> result = restaurantRepository.findByNameContainingIgnoreCase(keyword);
-        List<RestaurantDto> dtoList = result.stream()
-                .map(RestaurantDto::from)
+        List<RestaurantResponseDto> dtoList = result.stream()
+                .map(RestaurantResponseDto::from)
                 .toList();
         return ResponseEntity.ok(ApiResponse.success(dtoList));
     }
@@ -37,11 +36,11 @@ public class RestaurantController {
         return ResponseEntity.ok(ApiResponse.success("랜덤 추천 성공", dto));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<RestaurantDto>>> getAllRestaurants() {
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> getAllRestaurants() {
         List<Restaurant> all = restaurantRepository.findAll();
-        List<RestaurantDto> dtoList = all.stream()
-                .map(RestaurantDto::from)
+        List<RestaurantResponseDto> dtoList = all.stream()
+                .map(RestaurantResponseDto::from)
                 .toList();
         return ResponseEntity.ok(ApiResponse.success("모든 목록 조회 성공", dtoList));
     }

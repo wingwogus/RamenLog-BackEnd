@@ -21,6 +21,9 @@ public class RestaurantResponseDto {
     @Embedded
     private Address address;
 
+    @Schema(description = "식당 점수")
+    private Double score;
+
     @Schema(description = "식당 평점")
     private Double avgRating;
 
@@ -45,6 +48,7 @@ public class RestaurantResponseDto {
                 .address(restaurant.getAddress())
                 .longitude(restaurant.getLongitude())
                 .latitude(restaurant.getLatitude())
+                .score(restaurant.getScore())
                 .avgRating(restaurant.getAvgRating())
                 .imageUrl(restaurant.getImageUrl())
                 .build();

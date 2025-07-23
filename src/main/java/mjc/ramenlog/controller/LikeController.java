@@ -20,7 +20,7 @@ import java.util.List;
 public class LikeController {
     private final SpotLikeService spotLikeService;
 
-    @GetMapping("/")
+    @GetMapping
     @Operation(summary = "찜 목록", description = "사용자가 찜한 라멘집 목록을 불러옵니다.")
     public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> like(@AuthenticationPrincipal CustomUserDetails userDetails) {
         List<RestaurantResponseDto> likedRestaurants =

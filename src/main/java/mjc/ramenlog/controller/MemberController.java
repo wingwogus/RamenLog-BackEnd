@@ -17,7 +17,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<ApiResponse<MemberInfoResponseDto>> findMemberInfo(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         MemberInfoResponseDto information = memberService.getInformation(userDetails.getMember().getId());

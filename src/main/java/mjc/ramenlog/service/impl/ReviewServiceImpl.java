@@ -2,10 +2,7 @@
 package mjc.ramenlog.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import mjc.ramenlog.domain.Member;
-import mjc.ramenlog.domain.Restaurant;
-import mjc.ramenlog.domain.Review;
-import mjc.ramenlog.domain.ReviewImage;
+import mjc.ramenlog.domain.*;
 import mjc.ramenlog.dto.ReviewRequestDto;
 import mjc.ramenlog.dto.ReviewResponseDto;
 import mjc.ramenlog.exception.NotFoundMemberException;
@@ -84,6 +81,9 @@ public class ReviewServiceImpl implements ReviewService {
         // 6) restaurant.score와 avgRating 업데이트
         restaurant.setScore(computedScore);
         restaurant.setAvgRating(averageRating);
+
+        // 등급 계산
+        member.setGrade(Grade.fromReviewCount(member.getReview().size()));
     }
     
     @Override

@@ -30,6 +30,7 @@ public class Review {
 
     private LocalDateTime createdAt;
 
+    @Builder.Default
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> images = new ArrayList<>();
 
