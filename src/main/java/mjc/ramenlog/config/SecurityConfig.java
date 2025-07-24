@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
+                                "/.well-known/**",
                                 "/api/auth/**" ,
                                 "/api/import/**",
                                 "/v3/api-docs/**",
