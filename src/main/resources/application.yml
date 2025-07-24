@@ -53,9 +53,9 @@ server:
 
 
 springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    display-request-duration: true
-    operations-sorter: method
   api-docs:
-    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  override-with-generic-response: false
