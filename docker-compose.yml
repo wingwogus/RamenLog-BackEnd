@@ -1,23 +1,4 @@
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: ramenlog
-    volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - npm-net
-    restart: unless-stopped
-
-  redis:
-    image: redis:alpine
-    container_name: redis
-    networks:
-      - npm-net
-    restart: unless-stopped
-
   ramenlog-backend:
     build: ./backend
     container_name: ramenlog-backend

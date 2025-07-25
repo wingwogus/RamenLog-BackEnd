@@ -9,8 +9,9 @@ spring:
 
   data:
     redis:
-      host: ${SPRING_REDIS_HOST}
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      database: ${REDIS_DB}
 
   jpa:
     hibernate:
