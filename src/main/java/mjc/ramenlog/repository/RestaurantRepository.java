@@ -2,6 +2,8 @@ package mjc.ramenlog.repository;
 
 import mjc.ramenlog.domain.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 import java.util.List;
@@ -16,5 +18,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     // score 기준 내림차순 정렬
     Optional<List<Restaurant>> findTop10ByOrderByScoreDesc();
+
+    Page<Restaurant> findAllByAddressFullAddressContainingIgnoreCase(String keyword, Pageable pageable);
 }
 

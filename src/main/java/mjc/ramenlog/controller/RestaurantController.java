@@ -7,6 +7,9 @@ import mjc.ramenlog.dto.RestaurantResponseDto;
 import mjc.ramenlog.jwt.CustomUserDetails;
 import mjc.ramenlog.repository.RestaurantRepository;
 import mjc.ramenlog.service.inf.RestaurantService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -37,12 +40,38 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> getAllRestaurants() {
-        List<Restaurant> all = restaurantRepository.findAll();
-        List<RestaurantResponseDto> dtoList = all.stream()
-                .map(RestaurantResponseDto::from)
-                .toList();
-        return ResponseEntity.ok(ApiResponse.success("모든 목록 조회 성공", dtoList));
+    public ResponseEntity<ApiResponse<Page<RestaurantResponseDto>>> getAllRestaurants(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        if (customUserDetails == null) {
+            return ResponseEntity.ok(ApiResponse.success("모든 목록 조회 성공", restaurantService.getAllRestaurant(pageable)));
+        }
+
+        return ResponseEntity.ok(
+                ApiResponse.success("모든 목록 조회 성공",
+                        restaurantService.getAllRestaurant(customUserDetails.getMember().getId(), pageable)));
+    }
+
+    @GetMapping("/by-address")
+    public ResponseEntity<ApiResponse<Page<RestaurantResponseDto>>> getAllRestaurantsByAddress(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam String address,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        if (customUserDetails == null) {
+            return ResponseEntity.ok(ApiResponse.success(
+                    address + " 목록 조회 성공",
+                    restaurantService.getAllRestaurantByAddress(address, pageable)));
+        }
+
+        return ResponseEntity.ok(
+                ApiResponse.success("모든 목록 조회 성공",
+                        restaurantService.getAllRestaurantByAddress(customUserDetails.getMember().getId(), address, pageable)));
     }
 
     @GetMapping("/rank")
@@ -56,8 +85,11 @@ public class RestaurantController {
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        RestaurantResponseDto restaurant = restaurantService.getRestaurant(id, customUserDetails.getMember().getId());
+        if (customUserDetails == null) {
+            return ResponseEntity.ok(ApiResponse.success("레스토랑 조회 완료", restaurantService.getRestaurant(id)));
+        }
 
-        return ResponseEntity.ok(ApiResponse.success("레스토랑 조회 완료", restaurant));
+        return ResponseEntity.ok(ApiResponse.success("레스토랑 조회 완료",
+                    restaurantService.getRestaurant(id, customUserDetails.getMember().getId())));
     }
 }

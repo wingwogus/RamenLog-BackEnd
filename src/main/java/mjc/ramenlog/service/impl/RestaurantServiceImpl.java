@@ -10,6 +10,8 @@ import mjc.ramenlog.repository.MemberRepository;
 import mjc.ramenlog.repository.RestaurantRepository;
 import mjc.ramenlog.repository.SpotLikeRepository;
 import mjc.ramenlog.service.inf.RestaurantService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +29,18 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final MemberRepository memberRepository;
 
     @Override
+    public RestaurantResponseDto getRestaurant(Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(NotFoundRestaurantException::new);
+
+        return RestaurantResponseDto.from(restaurant);
+    }
+
+    @Override
     public RestaurantResponseDto getRestaurant(Long restaurantId, Long memberId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(NotFoundRestaurantException::new);
+
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
@@ -40,6 +51,26 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .ifPresent(spotLike -> dto.setLiked(true));
 
         return dto;
+    }
+
+    @Override
+    public Page<RestaurantResponseDto> getAllRestaurant(Pageable pageable) {
+        return restaurantRepository.findAll(pageable)
+                .map(RestaurantResponseDto::from);
+    }
+
+    @Override
+    public Page<RestaurantResponseDto> getAllRestaurant(Long memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        return restaurantRepository.findAll(pageable)
+                .map(restaurant -> {
+                    RestaurantResponseDto dto = RestaurantResponseDto.from(restaurant);
+                    spotLikeRepository.findByRestaurantAndMember(restaurant, member)
+                            .ifPresent(spotLike -> dto.setLiked(true));
+                    return dto;
+                });
     }
 
     @Override
@@ -61,5 +92,25 @@ public class RestaurantServiceImpl implements RestaurantService {
         return restaurants.stream()
                 .map(RestaurantResponseDto::from)
                 .toList();
+    }
+
+    @Override
+    public Page<RestaurantResponseDto> getAllRestaurantByAddress(String keyword, Pageable pageable) {
+        return restaurantRepository.findAllByAddressFullAddressContainingIgnoreCase(keyword, pageable)
+                .map(RestaurantResponseDto::from);
+    }
+
+    @Override
+    public Page<RestaurantResponseDto> getAllRestaurantByAddress(Long memberId, String keyword, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        return restaurantRepository.findAllByAddressFullAddressContainingIgnoreCase(keyword, pageable)
+                .map(restaurant -> {
+                    RestaurantResponseDto dto = RestaurantResponseDto.from(restaurant);
+                    spotLikeRepository.findByRestaurantAndMember(restaurant, member)
+                            .ifPresent(spotLike -> dto.setLiked(true));
+                    return dto;
+                });
     }
 }

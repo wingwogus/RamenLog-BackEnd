@@ -30,6 +30,10 @@ public class Restaurant {
     private double latitude; //위도
     private double longitude; //경도
 
+    private Boolean openNow;
+
+    private List<String> weekdayText; // 영업시간 텍스트 요약
+
     private String imageUrl;
 
     @Builder.Default
