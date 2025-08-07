@@ -1,11 +1,15 @@
 package mjc.ramenlog.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import mjc.ramenlog.dto.ApiResponse;
+import mjc.ramenlog.exception.InvalidTokenException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,21 +25,32 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        // 1. Request Header에서 JWT 토큰 추출
-        String token = resolveToken((HttpServletRequest) request);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        try {
+            String token = resolveToken(httpRequest);
 
+            if (token != null) {
+                jwtTokenProvider.validateToken(token); // 여기서 예외 발생 가능
+                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
 
-        // 2. validateToken으로 토큰 유효성 검사
-        if (token != null) {
-            jwtTokenProvider.validateToken(token);
-            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            chain.doFilter(request, response); // 정상 흐름
+
+        } catch (InvalidTokenException ex) {
+            // 예외 발생 시 JSON으로 직접 응답
+            SecurityContextHolder.clearContext();
+
+            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpResponse.setContentType("application/json;charset=UTF-8");
+
+            ApiResponse<Void> error = ApiResponse.error("토큰 오류: " + ex.getMessage());
+            new ObjectMapper().writeValue(httpResponse.getWriter(), error);
         }
-
-        chain.doFilter(request, response);
     }
 
     // Request Header에서 토큰 정보 추출
