@@ -39,3 +39,7 @@ out/
 
 ### application-secret ###
 /src/main/resources/application-secret.yml
+
+/.env
+
+/docker-compose.override.yml

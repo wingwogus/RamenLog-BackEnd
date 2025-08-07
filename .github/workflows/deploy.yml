@@ -1,4 +1,4 @@
-name: Deploy ramenlog (frontend + backend)
+name: Deploy RamenLog (frontend + backend)
 
 on:
   push:
@@ -22,15 +22,10 @@ jobs:
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/apps/ramenlog//backend/
 
-      - name: Rsync docker-compose.yml to server
-        run: |
-          rsync docker-compose.yml \
-            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/${{ secrets.SERVER_USER }}/apps/ramenlog/
-
       - name: Build and restart containers
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd /home/${{ secrets.SERVER_USER }}/apps/ramenlog
+            cd /home/${{ secrets.SERVER_USER }}/apps/ramenlog/backend
             docker-compose down
             docker-compose build
             docker-compose up -d

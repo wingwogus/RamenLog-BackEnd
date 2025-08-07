@@ -65,12 +65,6 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("회원가입에 성공하였습니다", null));
     }
 
-    @PostMapping
-    @Operation(summary = "토큰 검증 테스트", description = "AccessToken을 통한 사용자 확인 테스트입니다.")
-    public ResponseEntity<String> test(@AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(userDetails.getUsername());
-    }
-
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그아웃 처리 및 저장된 RefreshToken 삭제")
     public ResponseEntity<ApiResponse<Void>> logout(@AuthenticationPrincipal UserDetails userDetails) {
