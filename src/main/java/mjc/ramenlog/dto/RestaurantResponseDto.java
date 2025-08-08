@@ -1,12 +1,14 @@
 package mjc.ramenlog.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Embedded;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Setter;
 import mjc.ramenlog.domain.Address;
 import mjc.ramenlog.domain.Restaurant;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -40,6 +42,12 @@ public class RestaurantResponseDto {
     @Schema(description = "식당 찜 여부")
     private boolean isLiked;
 
+    private String phoneNumber;
+
+    private Boolean openNow;
+
+    private List<String> weekdayText;
+
 
     public static RestaurantResponseDto from(Restaurant restaurant) {
         return RestaurantResponseDto.builder()
@@ -51,6 +59,9 @@ public class RestaurantResponseDto {
                 .score(restaurant.getScore())
                 .avgRating(restaurant.getAvgRating())
                 .imageUrl(restaurant.getImageUrl())
+                .phoneNumber(restaurant.getPhoneNumber())
+                .openNow(restaurant.getOpenNow())
+                .weekdayText(restaurant.getWeekdayText())
                 .build();
     }
 }
