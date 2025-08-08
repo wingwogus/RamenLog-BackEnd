@@ -19,6 +19,9 @@ public class Restaurant {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
+    private String placeId;
+
     private String name;
 
     @Embedded
@@ -32,7 +35,12 @@ public class Restaurant {
 
     private Boolean openNow;
 
-    private List<String> weekdayText; // 영업시간 텍스트 요약
+    @ElementCollection // ⚠️ 어노테이션 추가
+    @CollectionTable(name = "restaurant_weekday_text", joinColumns = @JoinColumn(name = "restaurant_id"))
+    @Column(name = "weekday_text")
+    private List<String> weekdayText;
+
+    private String phoneNumber;
 
     private String imageUrl;
 
