@@ -3,6 +3,7 @@ package mjc.ramenlog.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import mjc.ramenlog.domain.Review;
+import mjc.ramenlog.domain.ReviewImage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,5 +36,9 @@ public class ReviewResponseDto {
         rating = review.getRating();
         content = review.getContent();
         createdAt = review.getCreatedAt();
+
+        for (ReviewImage reviewImage : review.getImages()) {
+            images.add(reviewImage.getImageUrl());
+        }
     }
 }
