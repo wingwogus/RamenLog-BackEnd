@@ -1,6 +1,8 @@
 // src/main/java/mjc/ramenlog/service/impl/ReviewServiceImpl.java
 package mjc.ramenlog.service.impl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lombok.RequiredArgsConstructor;
 import mjc.ramenlog.domain.*;
 import mjc.ramenlog.dto.ReviewRequestDto;
@@ -14,12 +16,16 @@ import mjc.ramenlog.repository.ReviewImageRepository;
 import mjc.ramenlog.repository.ReviewRepository;
 import mjc.ramenlog.service.inf.ReviewFileStorageService;
 import mjc.ramenlog.service.inf.ReviewService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +36,13 @@ public class ReviewServiceImpl implements ReviewService {
     private final RestaurantRepository restaurantRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewImageRepository reviewImageRepository;
-    private final ReviewFileStorageService reviewFileStorageService;
+
+    @Value("${cloudinary.name}")
+    private String cloudinaryName;
+    @Value("${cloudinary.key}")
+    private String cloudinaryKey;
+    @Value("${cloudinary.secret}")
+    private String cloudinarySecret;
 
     @Override
     public void saveReview(Long memberId, ReviewRequestDto dto, List<MultipartFile> images) {
@@ -50,18 +62,34 @@ public class ReviewServiceImpl implements ReviewService {
                 .build();
 
         review.setRestaurantAndMember(restaurant, member);
+        reviewRepository.save(review); // Review를 먼저 저장하여 ID를 생성합니다.
 
+        // 4) 이미지가 있으면 Cloudinary에 업로드하고 저장
+        if (images != null && !images.isEmpty()) {
+            Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                    "cloud_name", cloudinaryName,
+                    "api_key", cloudinaryKey,
+                    "api_secret", cloudinarySecret
+            ));
 
-        // 4) 이미지가 있으면 저장
-        if (images != null) {
-            images.forEach(img -> {
-                String url = reviewFileStorageService.storeReviewImage(img);
-                ReviewImage ri = new ReviewImage(review, url);
-                reviewImageRepository.save(ri);
+            images.forEach(file -> {
+                if (!file.isEmpty()) {
+                    try {
+                        String publicId = "review_images/" + UUID.randomUUID().toString();
+                        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+                                "public_id", publicId
+                        ));
+                        String url = (String) uploadResult.get("secure_url");
+
+                        ReviewImage ri = new ReviewImage(review, url);
+                        reviewImageRepository.save(ri);
+
+                    } catch (IOException e) {
+                        throw new RuntimeException("리뷰 이미지 저장 실패 (Cloudinary)", e);
+                    }
+                }
             });
         }
-       
-        reviewRepository.save(review);
 
         // 5) restaurant.review 리스트를 이용해 리뷰 수와 평균 계산
         int reviewCount = restaurant.getReview().size();
@@ -85,7 +113,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 등급 계산
         member.setGrade(Grade.fromReviewCount(member.getReview().size()));
     }
-    
+
     @Override
     public List<ReviewResponseDto> listReviewByMember(Long memberId) {
 

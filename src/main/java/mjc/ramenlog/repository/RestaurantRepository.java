@@ -20,5 +20,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Optional<List<Restaurant>> findTop10ByOrderByScoreDesc();
 
     Page<Restaurant> findAllByAddressFullAddressContainingIgnoreCase(String keyword, Pageable pageable);
+
+    boolean existsByPlaceId(String placeId);
 }
 

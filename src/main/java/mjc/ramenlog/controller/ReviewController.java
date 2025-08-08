@@ -28,17 +28,17 @@ public class ReviewController {
     @Operation(summary = "리뷰 작성", description = "리뷰 텍스트와 최대 3장의 이미지를 업로드합니다.")
     public ResponseEntity<ApiResponse<String>> createReview(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody ReviewRequestDto dto,
+            @RequestPart("dto") ReviewRequestDto dto,
             @RequestPart(value = "images", required = false) List<MultipartFile> images) {
         Long memberId = userDetails.getMember().getId();
-
         reviewService.saveReview(memberId, dto, images);
 
         return ResponseEntity.ok(ApiResponse.success("리뷰 등록 성공"));
     }
 
     @GetMapping
-    public  ResponseEntity<ApiResponse<List<ReviewResponseDto>>> getReviews(
+    @Operation(summary = "본인 리뷰 조회", description = "본인이 작성한 리뷰를 불러옵니다!")
+    public ResponseEntity<ApiResponse<List<ReviewResponseDto>>> getReviews(
             @AuthenticationPrincipal CustomUserDetails userDetails){
         Long memberId = userDetails.getMember().getId();
 
@@ -47,6 +47,7 @@ public class ReviewController {
     }
 
     @GetMapping("/{restaurantId}")
+    @Operation(summary = "식당 리뷰 조회", description = "식당의 리뷰를 조회합니다")
     public ResponseEntity<ApiResponse<List<ReviewResponseDto>>> getReviewsByRestaurant(@PathVariable Long restaurantId){
         List<ReviewResponseDto> data = reviewService.listReviewByRestaurant(restaurantId);
 
