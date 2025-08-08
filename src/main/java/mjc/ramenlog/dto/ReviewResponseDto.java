@@ -10,7 +10,10 @@ import java.util.List;
 
 @Data
 public class ReviewResponseDto {
-    @Schema(description = "리뷰 작성할 식당의 이름", example = "1")
+    @Schema(description = "리뷰 ID", example = "1")
+    private Long id;
+
+    @Schema(description = "리뷰 작성할 식당의 이름", example = "옥토끼제면소")
     private String restaurantName;
 
     @Schema(description = "별점 (0.5 단위)", example = "4.5")
@@ -26,6 +29,7 @@ public class ReviewResponseDto {
     private List<String> images = new ArrayList<>();
 
     public ReviewResponseDto(Review review) {
+        id = review.getId();
         restaurantName = review.getRestaurant().getName();
         nickname = review.getMember().getNickname();
         rating = review.getRating();
